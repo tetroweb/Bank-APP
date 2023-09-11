@@ -106,8 +106,7 @@ class UserSign:
         if username not in self.users:
             self.users[username] = password
             self.save_users()
-    
-    
+        
 class main(QWidget):
     def __init__(self):
         super().__init__()
