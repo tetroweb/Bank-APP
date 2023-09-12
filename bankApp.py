@@ -9,6 +9,21 @@ css = """
     QLineEdit::focus{border-bottom: 1px solid green}
     """
 
+class users():
+    def __init__(self,name,id,password,gender,money):
+        self.name = name
+        self.id = id
+        self.password = password
+        self.gender = gender
+        self.money = money
+    try:
+        def save_user(self):
+            users = "users.txt"
+            with open(users, "a") as dosya:
+                dosya.write(f"Name : {self.name}, ID: {self.id}, Sifre: {self.password}, Cinsiyet: {self.gender}, Maas :{self.money}\n")
+    except Exception as hata:
+        print("Bir hata oluştu:", hata)
+
 class main(QWidget):
     def __init__(self):
         super().__init__()
@@ -32,6 +47,7 @@ class main(QWidget):
         self.id_edit.setContentsMargins(0,0,0,0)
         self.id_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
         self.id_edit.setMaxLength(11)
+        
         
         self.form1.addRow(self.id_label,self.id_edit)
         
@@ -147,14 +163,26 @@ class main(QWidget):
     def open_Main_Window(self,e):
         with open('users.json', 'r') as dosya:
             users = json.load(dosya)
-        
         try:
+        
             if users[self.id_edit.text()] == self.password_edit.text() :
                     self.Main_Window = Main_Window()
                     self.Main_Window.show()
-        except:
-            self.id_edit.text() == "Wrong ID"
+            
+            if self.password_edit.text()  in users:
+                    self.Main_Window = Main_Window()
+                    self.Main_Window.show()  
+            
+        except KeyError :
+            if self.id_edit.text() !="" :
+                self.id_edit.clear()
+                self.id_edit.setPlaceholderText("ID is wrong")
+        if self.password_edit.text() not in users and self.password_edit.text() !="":
+                    self.password_edit.clear()
+                    self.password_edit.setPlaceholderText("password is wrong")  
+        
     def forgot_password_clicked(self,e):
+        
         self.show_window = New_Password_Window()
         self.show_window.show()
 
@@ -265,6 +293,8 @@ class SignUpWindow(QWidget):
         self.first_row = QHBoxLayout()
         self.second_row = QHBoxLayout()
         self.third_row = QHBoxLayout()
+        self.fourth_row = QHBoxLayout()
+        
         
         self.username_label = QLabel("ID :")
         self.username_label.setFont(QFont("Tahoma",10))
@@ -280,6 +310,9 @@ class SignUpWindow(QWidget):
         self.password_edit.setFont(QFont("Tahoma",12))
         self.password_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
         self.password_edit.setFixedWidth(150)
+        
+       
+        
         
         self.save_button = QPushButton("Save")
         self.save_button.setFixedWidth(80)
@@ -308,7 +341,18 @@ class SignUpWindow(QWidget):
         self.second_row.addWidget(self.password_edit)
         self.second_row.setContentsMargins(60,0,50,0)
         
-        self.third_row.addWidget(self.save_button)
+        self.gender_label = QLabel("Cinsiyet :")
+        self.gender_radio_male = QRadioButton("Erkek")
+        self.gender_radio_female = QRadioButton("Kadin")
+        
+        self.third_row.addWidget(self.gender_radio_male)
+        self.third_row.addWidget(self.gender_radio_female)
+        
+        self.form.addRow(self.gender_label,self.third_row)
+        
+        
+        
+        self.fourth_row.addWidget(self.save_button)
         
         self.form.addRow(self.first_row)
         self.form.addRow(self.second_row)
@@ -348,7 +392,8 @@ class UserSign:
             self.save_users()
         
 
-         
+user1 = users("Berkant","11347318604","1345790","Male","45000")  
+user1.save_user()     
 app = QApplication([])
 window = main()
 app.exec()
