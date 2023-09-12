@@ -13,7 +13,6 @@ class main(QWidget):
     def __init__(self):
         super().__init__()
         
-        
         self.vbox = QVBoxLayout(self)
         
         self.hbox1 = QHBoxLayout()
@@ -22,32 +21,32 @@ class main(QWidget):
         self.vbox.addLayout(self.form1)
         
         
-        self.label1 = QLabel("ID / CUSTOMER ID :")
-        self.label1.setFont(QFont("Tahoma",10))
-        self.label1.setContentsMargins(140,0,0,0)
+        self.id_label = QLabel("ID / CUSTOMER ID :")
+        self.id_label.setFont(QFont("Tahoma",10))
+        self.id_label.setContentsMargins(140,0,0,0)
         
-        self.edit1 = QLineEdit()
-        self.edit1.setFixedWidth(150)
-        self.edit1.setFont(QFont("Tahoma",12))
-        self.edit1.setStyleSheet(css)
-        self.edit1.setContentsMargins(0,0,0,0)
-        self.edit1.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
-        self.edit1.setMaxLength(11)
+        self.id_edit = QLineEdit()
+        self.id_edit.setFixedWidth(150)
+        self.id_edit.setFont(QFont("Tahoma",12))
+        self.id_edit.setStyleSheet(css)
+        self.id_edit.setContentsMargins(0,0,0,0)
+        self.id_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
+        self.id_edit.setMaxLength(11)
         
-        self.form1.addRow(self.label1,self.edit1)
+        self.form1.addRow(self.id_label,self.id_edit)
         
-        self.label2 = QLabel("Password :")
-        self.label2.setContentsMargins(140,0,0,0)
-        self.label2.setFont(QFont("Tahoma",10))
+        self.password_label = QLabel("Password :")
+        self.password_label.setContentsMargins(140,0,0,0)
+        self.password_label.setFont(QFont("Tahoma",10))
         
         
-        self.edit2 = QLineEdit()
-        self.edit2.setFixedWidth(150)
-        self.edit2.setFont(QFont("Tahoma",12))
-        self.edit2.setStyleSheet(css)
-        self.edit2.setEchoMode(QLineEdit.Password)
-        self.edit2.setMaxLength(6)
-        self.edit2.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
+        self.password_edit = QLineEdit()
+        self.password_edit.setFixedWidth(150)
+        self.password_edit.setFont(QFont("Tahoma",12))
+        self.password_edit.setStyleSheet(css)
+        self.password_edit.setEchoMode(QLineEdit.Password)
+        self.password_edit.setMaxLength(6)
+        self.password_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
         
         self.show_button = QPushButton()
         self.show_button.setIcon(QIcon("hide_pass.png"))
@@ -70,10 +69,10 @@ class main(QWidget):
         
         
         self.hbox2 = QHBoxLayout()
-        self.hbox2.addWidget(self.edit2)
+        self.hbox2.addWidget(self.password_edit)
         self.hbox2.addWidget(self.show_button)
         
-        self.form1.addRow(self.label2,self.hbox2)
+        self.form1.addRow(self.password_label,self.hbox2)
         self.form1.setContentsMargins(0,250,80,0)
         
         
@@ -134,11 +133,11 @@ class main(QWidget):
     
     
     def show_password(self,e):
-        if self.edit2.echoMode() == QLineEdit.Normal:
-            self.edit2.setEchoMode(QLineEdit.Password)
+        if self.password_edit.echoMode() == QLineEdit.Normal:
+            self.password_edit.setEchoMode(QLineEdit.Password)
             self.show_button.setIcon(QIcon("hide_pass.png"))
         else:
-            self.edit2.setEchoMode(QLineEdit.Normal)
+            self.password_edit.setEchoMode(QLineEdit.Normal)
             self.show_button.setIcon(QIcon("show_pass.png"))
     
     def show_sign_window(self,e):
@@ -149,22 +148,17 @@ class main(QWidget):
         with open('users.json', 'r') as dosya:
             users = json.load(dosya)
         
-        if users[self.edit1.text()] == self.edit2.text():
-            self.Main_Window = Main_Window()
-            self.Main_Window.show()
-    
+        try:
+            if users[self.id_edit.text()] == self.password_edit.text() :
+                    self.Main_Window = Main_Window()
+                    self.Main_Window.show()
+        except:
+            self.id_edit.text() == "Wrong ID"
     def forgot_password_clicked(self,e):
         self.show_window = New_Password_Window()
         self.show_window.show()
 
-
 class New_Password_Window(QWidget):
-    
-
-    def timer(self):
-        timer = QTimer()
-        timer.timeout.connect(self.close)
-        timer.start(1000)
         
     def __init__(self):
         super().__init__()
@@ -211,7 +205,7 @@ class New_Password_Window(QWidget):
         self.save_button.setFixedWidth(80)
         self.third_row.setContentsMargins(140,0,0,0)
         self.save_button.clicked.connect(self.save_password)
-        self.save_button.clicked.connect(self.timer)
+        
         
         
         
@@ -247,12 +241,14 @@ class New_Password_Window(QWidget):
                 self.users[value] = self.new_password_edit.text()
                 with open('users.json', 'w') as dosya:
                     json.dump(self.users, dosya)
-            
+                self.save_button.close()
+                self.succes_label = QLabel("şifre sifirlandi")
+                self.succes_label.setStyleSheet("color: green;")
+                self.third_row.addWidget(self.succes_label)
+                self.timer = QTimer(self)
+                self.timer.timeout.connect(self.close)
+                self.timer.start(1000)   
     
-    
-            
-
-
 class SignUpWindow(QWidget):
     def __init__(self):
         super().__init__()
