@@ -159,10 +159,16 @@ class main(QWidget):
 
 
 class New_Password_Window(QWidget):
+    
+
+    def timer(self):
+        timer = QTimer()
+        timer.timeout.connect(self.close)
+        timer.start(1000)
+        
     def __init__(self):
         super().__init__()
-        self.main = main()
-        self.user_sign = UserSign()
+        
         
         self.vbox = QVBoxLayout(self)
         self.form = QFormLayout()
@@ -205,6 +211,10 @@ class New_Password_Window(QWidget):
         self.save_button.setFixedWidth(80)
         self.third_row.setContentsMargins(140,0,0,0)
         self.save_button.clicked.connect(self.save_password)
+        self.save_button.clicked.connect(self.timer)
+        
+        
+        
         self.save_button.setStyleSheet("""
             QPushButton {
                 background-color: #018000;
@@ -223,15 +233,24 @@ class New_Password_Window(QWidget):
         self.third_row.addWidget(self.save_button)
         self.form.addRow(self.third_row)
         
+        
         self.setWindowTitle("Reset Password")
         self.resize(300,400)
 
     def save_password(self,e):
+        with open('users.json', 'r') as dosya:
+            self.users = json.load(dosya)
+        self.keys = list(self.users.keys()) 
         
-        
-        if self.old_password_edit.text() == self.new_password_edit.text() :
-            print("same")
-        
+        if self.old_password_edit.text() in self.users.values():
+            for value in self.keys: 
+                self.users[value] = self.new_password_edit.text()
+                with open('users.json', 'w') as dosya:
+                    json.dump(self.users, dosya)
+            
+    
+    
+            
 
 
 class SignUpWindow(QWidget):
