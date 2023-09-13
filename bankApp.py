@@ -357,7 +357,7 @@ class SignUpWindow(QWidget):
         self.form.addRow(self.first_row)
         self.form.addRow(self.second_row)
         self.form.addRow(self.third_row)
-        
+        self.form.addRow(self.fourth_row)
         
         self.resize(300,500)
         
@@ -393,7 +393,8 @@ class UserSign:
         
 
 user1 = users("Berkant","11347318604","1345790","Male","45000")  
-user1.save_user()     
+user1.save_user()
+
 app = QApplication([])
 window = main()
 app.exec()
