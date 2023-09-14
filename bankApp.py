@@ -4,16 +4,7 @@ from PyQt5.QtCore import *
 import json
 import sqlite3
 
-con = sqlite3.connect("customers.db")
 
-cursor = con.cursor()
-
-def create_table():
-    cursor.execute("CREATE TABLE customers (id TEXT,password TEXT)")
-    con.commit()
-    con.close()
-
-create_table()
 
 css = """
     QLineEdit{border:none;}
