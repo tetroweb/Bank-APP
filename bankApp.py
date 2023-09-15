@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-import json
 import sqlite3
 
 connect = sqlite3.connect("customers.db")
@@ -392,11 +391,6 @@ class New_Password_Window(QWidget):
             self.connect.commit()
             self.connect.close()
              
-        
-    
-
-        
-
 class Main_Window(QWidget):
     def __init__(self):
         super().__init__()
