@@ -14,6 +14,12 @@ class SignUpWindow(QWidget):
     
     def __init__(self):
         super().__init__()
+        print(self.size())
+        self.background_label = QLabel(self)
+        self.pixmap = QPixmap('sign_background.jpg')  # Resmin dosya yolu
+        self.background_label.setPixmap(self.pixmap)
+        self.background_label.setGeometry(0, -10,480,640)
+        self.background_label.setStyleSheet("background-image: url('sign_background.jpg');")
         
         self.UserSign = UserSign()
         
@@ -22,7 +28,7 @@ class SignUpWindow(QWidget):
         self.vbox = QVBoxLayout(self)
         self.form = QFormLayout()
         self.vbox.addLayout(self.form)
-        self.form.setContentsMargins(0,100,0,0)
+        self.form.setContentsMargins(0,150,0,0)
         
         
         self.first_row = QHBoxLayout()
@@ -30,7 +36,6 @@ class SignUpWindow(QWidget):
         self.third_row = QHBoxLayout()
         self.fourth_row = QHBoxLayout()
         self.fifth_row = QHBoxLayout()
-        self.sixth_row = QHBoxLayout()
         
         self.id_label = QLabel("ID :")
         self.id_label.setFont(QFont("Tahoma",10))
@@ -64,12 +69,10 @@ class SignUpWindow(QWidget):
         self.surname_edit.setFixedWidth(150)
         self.fourth_row.setAlignment(Qt.AlignHCenter)
         self.fourth_row.setContentsMargins(60,0,50,0)
-        
-        
        
         self.save_button = QPushButton("Save")
         self.save_button.setFixedWidth(80)
-        self.sixth_row.setContentsMargins(140,0,0,0)
+        self.fifth_row.setContentsMargins(140,0,0,0)
         self.save_button.clicked.connect(self.sign_users)
         self.save_button.setStyleSheet("""
             QPushButton {
@@ -100,17 +103,13 @@ class SignUpWindow(QWidget):
         self.fourth_row.addWidget(self.password_label)
         self.fourth_row.addWidget(self.password_edit)
         
-        
-        
-        
-        self.sixth_row.addWidget(self.save_button)
+        self.fifth_row.addWidget(self.save_button)
         
         self.form.addRow(self.first_row)
         self.form.addRow(self.second_row)
         self.form.addRow(self.third_row)
         self.form.addRow(self.fourth_row)
         self.form.addRow(self.fifth_row)
-        self.form.addRow(self.sixth_row)
         
         self.resize(300,500)
         
@@ -128,6 +127,13 @@ class SignUpWindow(QWidget):
 class main(QWidget):
     def __init__(self):
         super().__init__()
+        self.background_label = QLabel(self)
+        self.pixmap = QPixmap('Main_Theme.jpg')  # Resmin dosya yolu
+        self.background_label.setPixmap(self.pixmap)
+        self.background_label.setGeometry(0, 0, 650,700)
+        self.background_label.setStyleSheet("background-image: url('Main_Theme.jpg');")
+        
+        
         
         self.vbox = QVBoxLayout(self)
         
@@ -213,7 +219,7 @@ class main(QWidget):
         
         self.forgot_password = QLabel("forgot password")
         self.forgot_password.setFont(QFont("Tahoma",6))
-        self.forgot_password.setStyleSheet("color:#888897")
+        self.forgot_password.setStyleSheet("color:white")
         self.forgot_password.mousePressEvent = self.forgot_password_clicked
         
                 
@@ -298,14 +304,14 @@ class New_Password_Window(QWidget):
         self.vbox = QVBoxLayout(self)
         self.form = QFormLayout()
         self.vbox.addLayout(self.form)
-        self.form.setContentsMargins(0,160,0,0)
+        self.form.setContentsMargins(0,100,0,0)
         
         
         self.first_row = QHBoxLayout()
         self.second_row = QHBoxLayout()
         self.third_row = QHBoxLayout()
         
-        self.old_password_label = QLabel("Eski Şifre :")
+        self.old_password_label = QLabel("Eski şifre :")
         self.old_password_label.setFont(QFont("Tahoma",10))
         self.old_password_edit = QLineEdit()
         self.old_password_edit.setFont(QFont("Tahoma",12))
@@ -375,7 +381,7 @@ class New_Password_Window(QWidget):
                     self.old_password_edit.setToolTip("Same password")
                     self.old_password_edit.setStyleSheet("color:red;")
                 else:
-                    self.connect.execute(f"update customers set password = '{self.new_password_edit.text()}' where password ='{self.old_password_edit.text()}'")
+                    self.connect.execute(f"update customers set password = '{self.new_password_edit.text()}' where id ='{self.old_password_edit.text()}'")
                     self.save_button.close()
                     self.succes_label = QLabel("şifre sifirlandi")
                     self.succes_label.setStyleSheet("color: green;")
@@ -391,32 +397,26 @@ class New_Password_Window(QWidget):
             self.connect.commit()
             self.connect.close()
              
-class Main_Window(QWidget):
+class Main_Window(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        self.resize(500,500)       
-
-class UserSign:
-    def __init__(self):
-        self.users = {}  
-
-    def load_users(self):
-        try:
-            with open('users.json', 'r') as file:
-                self.users = json.load(file)
-        except FileNotFoundError:
-            self.users = {}
-    
-    def save_users(self):
-        with open('users.json', 'w') as file:
-            json.dump(self.users, file)
-    
-    def add_user(self, username, password):
-        if username not in self.users:
-            self.users[username] = password
-            self.save_users()
+        self.menubar = QMenuBar(self)
+        self.menubar.setStyleSheet("""
+            background-color: green;
+            color: white;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        """)
+        self.account_menu = self.menubar.addMenu("Hesap")
+        self.money_menu = self.menubar.addMenu("Para Aktarma")
+        self.converter_menu = self.menubar.addMenu("Dönüştürme")
         
+        
+        self.menubar.setFixedHeight(70)
+        
+        self.showMaximized()       
+
 
 
 
