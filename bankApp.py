@@ -4,28 +4,128 @@ from PyQt5.QtCore import *
 import json
 import sqlite3
 
-
+connect = sqlite3.connect("customers.db")
 
 css = """
     QLineEdit{border:none;}
     QLineEdit::focus{border-bottom: 1px solid green}
     """
-
-class users():
-    def __init__(self,name,id,password,gender,money):
-        self.name = name
-        self.id = id
-        self.password = password
-        self.gender = gender
-        self.money = money
-    try:
-        def save_user(self):
-            users = "users.txt"
-            with open(users, "a") as dosya:
-                dosya.write(f"Name : {self.name}, ID: {self.id}, Sifre: {self.password}, Cinsiyet: {self.gender}, Maas :{self.money}\n")
-    except Exception as hata:
-        print("Bir hata oluştu:", hata)
-
+    
+class SignUpWindow(QWidget):
+    
+    def __init__(self):
+        super().__init__()
+        
+        self.UserSign = UserSign()
+        
+        self.setWindowTitle('Sign Window')
+        
+        self.vbox = QVBoxLayout(self)
+        self.form = QFormLayout()
+        self.vbox.addLayout(self.form)
+        self.form.setContentsMargins(0,100,0,0)
+        
+        
+        self.first_row = QHBoxLayout()
+        self.second_row = QHBoxLayout()
+        self.third_row = QHBoxLayout()
+        self.fourth_row = QHBoxLayout()
+        self.fifth_row = QHBoxLayout()
+        self.sixth_row = QHBoxLayout()
+        
+        self.id_label = QLabel("ID :")
+        self.id_label.setFont(QFont("Tahoma",10))
+        self.id_edit = QLineEdit()
+        self.id_edit.setFont(QFont("Tahoma",12))
+        self.id_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
+        self.id_edit.setFixedWidth(150)
+        self.first_row.setAlignment(Qt.AlignHCenter)
+        
+        self.password_label = QLabel("Password :")
+        self.password_label.setFont(QFont("Tahoma",10))
+        self.password_edit = QLineEdit()
+        self.password_edit.setFont(QFont("Tahoma",12))
+        self.password_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
+        self.password_edit.setFixedWidth(150)
+        
+        self.name_label = QLabel("Name :")
+        self.name_label.setFont(QFont("Tahoma",10))
+        self.name_edit = QLineEdit()
+        self.name_edit.setFont(QFont("Tahoma",12))
+        self.name_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
+        self.name_edit.setFixedWidth(150)
+        self.third_row.setAlignment(Qt.AlignHCenter)
+        self.third_row.setContentsMargins(60,0,50,0)
+        
+        self.surname_label = QLabel("Surname :")
+        self.surname_label.setFont(QFont("Tahoma",10))
+        self.surname_edit = QLineEdit()
+        self.surname_edit.setFont(QFont("Tahoma",12))
+        self.surname_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
+        self.surname_edit.setFixedWidth(150)
+        self.fourth_row.setAlignment(Qt.AlignHCenter)
+        self.fourth_row.setContentsMargins(60,0,50,0)
+        
+        
+       
+        self.save_button = QPushButton("Save")
+        self.save_button.setFixedWidth(80)
+        self.sixth_row.setContentsMargins(140,0,0,0)
+        self.save_button.clicked.connect(self.sign_users)
+        self.save_button.setStyleSheet("""
+            QPushButton {
+                background-color: #018000;
+                color: white;
+                border: none;
+                padding:2px;
+                border-radius: 3px;
+            }
+            
+            QPushButton:hover {
+                background-color: #5EBF00;
+                
+            }
+        """)
+        
+        self.first_row.addWidget(self.name_label)
+        self.first_row.addWidget(self.name_edit)
+        self.first_row.setContentsMargins(60,0,50,0)
+        
+        self.second_row.addWidget(self.surname_label)
+        self.second_row.addWidget(self.surname_edit)
+        self.second_row.setContentsMargins(60,0,50,0)
+        
+        self.third_row.addWidget(self.id_label)
+        self.third_row.addWidget(self.id_edit)        
+        
+        self.fourth_row.addWidget(self.password_label)
+        self.fourth_row.addWidget(self.password_edit)
+        
+        
+        
+        
+        self.sixth_row.addWidget(self.save_button)
+        
+        self.form.addRow(self.first_row)
+        self.form.addRow(self.second_row)
+        self.form.addRow(self.third_row)
+        self.form.addRow(self.fourth_row)
+        self.form.addRow(self.fifth_row)
+        self.form.addRow(self.sixth_row)
+        
+        self.resize(300,500)
+        
+    def sign_users(self,e):
+        
+        self.connect = sqlite3.connect("customers.db")
+        self.connect.execute(f"""insert into customers
+                             (name,surname,id,password)
+                             values('{self.name_edit.text()}','{self.surname_edit.text()}','{self.id_edit.text()}','{self.password_edit.text()}')""")
+        
+        self.connect.commit()
+        self.connect.close()
+        self.close()
+        
 class main(QWidget):
     def __init__(self):
         super().__init__()
@@ -163,26 +263,28 @@ class main(QWidget):
         self.sign_window.show()
     
     def open_Main_Window(self,e):
-        with open('users.json', 'r') as dosya:
-            users = json.load(dosya)
+        id_list = [row[2] for row in connect.execute("select * from customers")]
+        password_list = [row[3] for row in connect.execute("select * from customers")]
+        
         try:
+            if self.id_edit.text() in id_list and password_list[id_list.index(self.id_edit.text())] == self.password_edit.text():
+                self.open_Main_Window = Main_Window()
+                self.open_Main_Window.show()
+                self.close()
+            
         
-            if users[self.id_edit.text()] == self.password_edit.text() :
-                    self.Main_Window = Main_Window()
-                    self.Main_Window.show()
-            
-            if self.password_edit.text()  in users:
-                    self.Main_Window = Main_Window()
-                    self.Main_Window.show()  
-            
-        except KeyError :
-            if self.id_edit.text() !="" :
+        except ValueError:
+            if self.id_edit.text() not in id_list :
                 self.id_edit.clear()
-                self.id_edit.setPlaceholderText("ID is wrong")
-        if self.password_edit.text() not in users and self.password_edit.text() !="":
-                    self.password_edit.clear()
-                    self.password_edit.setPlaceholderText("password is wrong")  
-        
+                self.id_edit.setPlaceholderText("id is wrong")
+            if self.password_edit.text() not in password_list:
+                self.password_edit.clear()
+                self.password_edit.setPlaceholderText("password is wrong")
+            if self.id_edit.text() =="":
+                self.id_edit.setPlaceholderText("write id")
+            if self.password_edit.text() =="":
+                self.password_edit.setPlaceholderText("write id")
+            
     def forgot_password_clicked(self,e):
         
         self.show_window = New_Password_Window()
@@ -262,137 +364,38 @@ class New_Password_Window(QWidget):
         self.resize(300,400)
 
     def save_password(self,e):
-        with open('users.json', 'r') as dosya:
-            self.users = json.load(dosya)
-        self.keys = list(self.users.keys()) 
-        
-        if self.old_password_edit.text() in self.users.values():
-            for value in self.keys: 
-                self.users[value] = self.new_password_edit.text()
-                with open('users.json', 'w') as dosya:
-                    json.dump(self.users, dosya)
-                self.save_button.close()
-                self.succes_label = QLabel("şifre sifirlandi")
-                self.succes_label.setStyleSheet("color: green;")
-                self.third_row.addWidget(self.succes_label)
-                self.timer = QTimer(self)
-                self.timer.timeout.connect(self.close)
-                self.timer.start(1000)   
-    
-class SignUpWindow(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.UserSign = UserSign()
-        
-        self.setWindowTitle('Sign Window')
-        
-        self.vbox = QVBoxLayout(self)
-        self.form = QFormLayout()
-        self.vbox.addLayout(self.form)
-        self.form.setContentsMargins(0,100,0,0)
-        
-        
-        self.first_row = QHBoxLayout()
-        self.second_row = QHBoxLayout()
-        self.third_row = QHBoxLayout()
-        self.fourth_row = QHBoxLayout()
-        self.fifth_row = QHBoxLayout()
-        self.sixth_row = QHBoxLayout()
-        
-        self.id_label = QLabel("ID :")
-        self.id_label.setFont(QFont("Tahoma",10))
-        self.id_edit = QLineEdit()
-        self.id_edit.setFont(QFont("Tahoma",12))
-        self.id_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
-        self.id_edit.setFixedWidth(150)
-        self.first_row.setAlignment(Qt.AlignHCenter)
-        
-        self.password_label = QLabel("Password :")
-        self.password_label.setFont(QFont("Tahoma",10))
-        self.password_edit = QLineEdit()
-        self.password_edit.setFont(QFont("Tahoma",12))
-        self.password_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
-        self.password_edit.setFixedWidth(150)
-        
-        self.name_label = QLabel("Name :")
-        self.name_label.setFont(QFont("Tahoma",10))
-        self.name_edit = QLineEdit()
-        self.name_edit.setFont(QFont("Tahoma",12))
-        self.name_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
-        self.name_edit.setFixedWidth(150)
-        self.third_row.setAlignment(Qt.AlignHCenter)
-        self.third_row.setContentsMargins(60,0,50,0)
-        
-        self.surname_label = QLabel("Surname :")
-        self.surname_label.setFont(QFont("Tahoma",10))
-        self.surname_edit = QLineEdit()
-        self.surname_edit.setFont(QFont("Tahoma",12))
-        self.surname_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
-        self.surname_edit.setFixedWidth(150)
-        self.fourth_row.setAlignment(Qt.AlignHCenter)
-        self.fourth_row.setContentsMargins(60,0,50,0)
-        
-        self.gender_label = QLabel("Gender:")
-        self.gender_label.setFont(QFont("Tahoma",10))
-        self.male_radio_button = QRadioButton("Man")
-        self.male_radio_button.setFont(QFont("Tahoma",10))
-        self.female_radio_button = QRadioButton("Woman")
-        self.female_radio_button.setFont(QFont("Tahoma",10))
-       
-        self.save_button = QPushButton("Save")
-        self.save_button.setFixedWidth(80)
-        self.sixth_row.setContentsMargins(140,0,0,0)
-        self.save_button.clicked.connect(self.sign_users)
-        self.save_button.setStyleSheet("""
-            QPushButton {
-                background-color: #018000;
-                color: white;
-                border: none;
-                padding:2px;
-                border-radius: 3px;
-            }
             
-            QPushButton:hover {
-                background-color: #5EBF00;
-                
-            }
-        """)
+            self.connect = sqlite3.connect("customers.db")
+            password_list = [row[3] for row in connect.execute("select * from customers")]
+            
+            if self.old_password_edit.text() in password_list:
+                if self.old_password_edit.text() == self.new_password_edit.text():
+                    self.old_password_edit.clear()
+                    self.new_password_edit.clear()
+                    self.old_password_edit.setPlaceholderText("Same password")
+                    self.old_password_edit.setToolTip("Same password")
+                    self.old_password_edit.setStyleSheet("color:red;")
+                else:
+                    self.connect.execute(f"update customers set password = '{self.new_password_edit.text()}' where password ='{self.old_password_edit.text()}'")
+                    self.save_button.close()
+                    self.succes_label = QLabel("şifre sifirlandi")
+                    self.succes_label.setStyleSheet("color: green;")
+                    self.third_row.addWidget(self.succes_label)
+                    self.timer = QTimer(self)
+                    self.timer.timeout.connect(self.close)
+                    self.timer.start(1000)
+            
+            else:
+                self.old_password_edit.clear()
+                self.old_password_edit.setPlaceholderText("ERROR!")
+                self.old_password_edit.setStyleSheet("color:red;")
+            self.connect.commit()
+            self.connect.close()
+             
         
-        self.first_row.addWidget(self.name_label)
-        self.first_row.addWidget(self.name_edit)
-        self.first_row.setContentsMargins(60,0,50,0)
+    
+
         
-        self.second_row.addWidget(self.surname_label)
-        self.second_row.addWidget(self.surname_edit)
-        self.second_row.setContentsMargins(60,0,50,0)
-        
-        self.third_row.addWidget(self.id_label)
-        self.third_row.addWidget(self.id_edit)        
-        
-        self.fourth_row.addWidget(self.password_label)
-        self.fourth_row.addWidget(self.password_edit)
-        
-        self.fifth_row.addWidget(self.gender_label)
-        self.fifth_row.addWidget(self.male_radio_button)
-        self.fifth_row.addWidget(self.female_radio_button)
-        self.fifth_row.setAlignment(Qt.AlignHCenter)
-        self.fifth_row.setContentsMargins(56,0,50,0)
-        
-        self.sixth_row.addWidget(self.save_button)
-        
-        self.form.addRow(self.first_row)
-        self.form.addRow(self.second_row)
-        self.form.addRow(self.third_row)
-        self.form.addRow(self.fourth_row)
-        self.form.addRow(self.fifth_row)
-        self.form.addRow(self.sixth_row)
-        
-        self.resize(300,500)
-        
-    def sign_users(self,e):
-        # self.UserSign.add_user(self.id_edit.text(),self.password_edit.text())
-        # self.close()
-        pass
 
 class Main_Window(QWidget):
     def __init__(self):
