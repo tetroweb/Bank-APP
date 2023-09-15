@@ -402,22 +402,19 @@ class Main_Window(QMainWindow):
         super().__init__()
         
         self.menubar = QMenuBar(self)
-        self.menubar.setStyleSheet("""
-            background-color: green;
-            color: white;
-            font-size: 16px;
-            font-family: Arial, sans-serif;
-        """)
-        self.account_menu = self.menubar.addMenu("Hesap")
-        self.money_menu = self.menubar.addMenu("Para Aktarma")
-        self.converter_menu = self.menubar.addMenu("Dönüştürme")
+        
+        self.menubar.setFixedHeight(60)
+        
+        self.profile = self.menubar.addMenu("   Profil1   ")
+        self.profile.setFont(QFont("Tahoma",15))
+        self.profile1 = self.menubar.addMenu("   Profil2   ")
+        self.profile2 = self.menubar.addMenu("   Profil3   ")
+        self.profile3 = self.menubar.addMenu("   Profil4   ")
         
         
-        self.menubar.setFixedHeight(70)
         
-        self.showMaximized()       
-
-
+        self.setMenuBar(self.menubar)
+        self.resize(600,600)
 
 
 app = QApplication([])
