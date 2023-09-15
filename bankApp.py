@@ -289,21 +289,22 @@ class SignUpWindow(QWidget):
         self.vbox = QVBoxLayout(self)
         self.form = QFormLayout()
         self.vbox.addLayout(self.form)
-        self.form.setContentsMargins(0,160,0,0)
+        self.form.setContentsMargins(0,100,0,0)
         
         
         self.first_row = QHBoxLayout()
         self.second_row = QHBoxLayout()
         self.third_row = QHBoxLayout()
         self.fourth_row = QHBoxLayout()
+        self.fifth_row = QHBoxLayout()
+        self.sixth_row = QHBoxLayout()
         
-        
-        self.username_label = QLabel("ID :")
-        self.username_label.setFont(QFont("Tahoma",10))
-        self.username_edit = QLineEdit()
-        self.username_edit.setFont(QFont("Tahoma",12))
-        self.username_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
-        self.username_edit.setFixedWidth(150)
+        self.id_label = QLabel("ID :")
+        self.id_label.setFont(QFont("Tahoma",10))
+        self.id_edit = QLineEdit()
+        self.id_edit.setFont(QFont("Tahoma",12))
+        self.id_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
+        self.id_edit.setFixedWidth(150)
         self.first_row.setAlignment(Qt.AlignHCenter)
         
         self.password_label = QLabel("Password :")
@@ -313,12 +314,34 @@ class SignUpWindow(QWidget):
         self.password_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
         self.password_edit.setFixedWidth(150)
         
+        self.name_label = QLabel("Name :")
+        self.name_label.setFont(QFont("Tahoma",10))
+        self.name_edit = QLineEdit()
+        self.name_edit.setFont(QFont("Tahoma",12))
+        self.name_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
+        self.name_edit.setFixedWidth(150)
+        self.third_row.setAlignment(Qt.AlignHCenter)
+        self.third_row.setContentsMargins(60,0,50,0)
+        
+        self.surname_label = QLabel("Surname :")
+        self.surname_label.setFont(QFont("Tahoma",10))
+        self.surname_edit = QLineEdit()
+        self.surname_edit.setFont(QFont("Tahoma",12))
+        self.surname_edit.setStyleSheet("QLineEdit::hover{background-color:#EFFFFF;}")
+        self.surname_edit.setFixedWidth(150)
+        self.fourth_row.setAlignment(Qt.AlignHCenter)
+        self.fourth_row.setContentsMargins(60,0,50,0)
+        
+        self.gender_label = QLabel("Gender:")
+        self.gender_label.setFont(QFont("Tahoma",10))
+        self.male_radio_button = QRadioButton("Man")
+        self.male_radio_button.setFont(QFont("Tahoma",10))
+        self.female_radio_button = QRadioButton("Woman")
+        self.female_radio_button.setFont(QFont("Tahoma",10))
        
-        
-        
         self.save_button = QPushButton("Save")
         self.save_button.setFixedWidth(80)
-        self.third_row.setContentsMargins(140,0,0,0)
+        self.sixth_row.setContentsMargins(140,0,0,0)
         self.save_button.clicked.connect(self.sign_users)
         self.save_button.setStyleSheet("""
             QPushButton {
@@ -335,37 +358,41 @@ class SignUpWindow(QWidget):
             }
         """)
         
-        self.first_row.addWidget(self.username_label)
-        self.first_row.addWidget(self.username_edit)
+        self.first_row.addWidget(self.name_label)
+        self.first_row.addWidget(self.name_edit)
         self.first_row.setContentsMargins(60,0,50,0)
         
-        self.second_row.addWidget(self.password_label)
-        self.second_row.addWidget(self.password_edit)
+        self.second_row.addWidget(self.surname_label)
+        self.second_row.addWidget(self.surname_edit)
         self.second_row.setContentsMargins(60,0,50,0)
         
-        self.gender_label = QLabel("Cinsiyet :")
-        self.gender_radio_male = QRadioButton("Erkek")
-        self.gender_radio_female = QRadioButton("Kadin")
+        self.third_row.addWidget(self.id_label)
+        self.third_row.addWidget(self.id_edit)        
         
-        self.third_row.addWidget(self.gender_radio_male)
-        self.third_row.addWidget(self.gender_radio_female)
+        self.fourth_row.addWidget(self.password_label)
+        self.fourth_row.addWidget(self.password_edit)
         
-        self.form.addRow(self.gender_label,self.third_row)
+        self.fifth_row.addWidget(self.gender_label)
+        self.fifth_row.addWidget(self.male_radio_button)
+        self.fifth_row.addWidget(self.female_radio_button)
+        self.fifth_row.setAlignment(Qt.AlignHCenter)
+        self.fifth_row.setContentsMargins(56,0,50,0)
         
-        
-        
-        self.fourth_row.addWidget(self.save_button)
+        self.sixth_row.addWidget(self.save_button)
         
         self.form.addRow(self.first_row)
         self.form.addRow(self.second_row)
         self.form.addRow(self.third_row)
         self.form.addRow(self.fourth_row)
+        self.form.addRow(self.fifth_row)
+        self.form.addRow(self.sixth_row)
         
         self.resize(300,500)
         
     def sign_users(self,e):
-        self.UserSign.add_user(self.username_edit.text(),self.password_edit.text())
-        self.close()
+        # self.UserSign.add_user(self.id_edit.text(),self.password_edit.text())
+        # self.close()
+        pass
 
 class Main_Window(QWidget):
     def __init__(self):
@@ -394,8 +421,7 @@ class UserSign:
             self.save_users()
         
 
-user1 = users("Berkant","11347318604","1345790","Male","45000")  
-user1.save_user()
+
 
 app = QApplication([])
 window = main()
