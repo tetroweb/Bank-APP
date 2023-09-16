@@ -406,7 +406,7 @@ class Main_Window(QMainWindow):
         self.menubar.setFixedHeight(60)
         
         self.profile = self.menubar.addMenu("   Profil1   ")
-        self.profile.setFont(QFont("Tahoma",15))
+        
         self.profile1 = self.menubar.addMenu("   Profil2   ")
         self.profile2 = self.menubar.addMenu("   Profil3   ")
         self.profile3 = self.menubar.addMenu("   Profil4   ")
