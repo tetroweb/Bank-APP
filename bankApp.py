@@ -21,7 +21,7 @@ class SignUpWindow(QWidget):
         self.background_label.setGeometry(0, -10,480,640)
         self.background_label.setStyleSheet("background-image: url('sign_background.jpg');")
         
-        self.UserSign = UserSign()
+        
         
         self.setWindowTitle('Sign Window')
         
