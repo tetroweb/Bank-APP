@@ -127,6 +127,9 @@ class SignUpWindow(QWidget):
 class main(QWidget):
     def __init__(self):
         super().__init__()
+       
+       
+       
         self.background_label = QLabel(self)
         self.pixmap = QPixmap('Main_Theme.jpg')  # Resmin dosya yolu
         self.background_label.setPixmap(self.pixmap)
@@ -251,6 +254,10 @@ class main(QWidget):
         self.hbox_sign.setAlignment(Qt.AlignHCenter)
         self.form1.addRow(self.hbox_sign)
         
+        
+        
+        
+        
         self.setFixedSize(650,700)
         self.show()
     
@@ -268,21 +275,26 @@ class main(QWidget):
         self.sign_window.show()
     
     def open_Main_Window(self,e):
-        id_list = [row[2] for row in connect.execute("select * from customers")]
-        password_list = [row[3] for row in connect.execute("select * from customers")]
+        self.id_list = [row[2] for row in connect.execute("select * from customers")]
+        self.password_list = [row[3] for row in connect.execute("select * from customers")]
+        self.name_list = [row[0] for row in connect.execute("select * from customers")]
+        self.surname_list = [row[1] for row in connect.execute("select * from customers")]
+        
+        self.name =self.name_list[self.id_list.index(self.id_edit.text())]
+        self.surname = self.surname_list[self.id_list.index(self.id_edit.text())]
         
         try:
-            if self.id_edit.text() in id_list and password_list[id_list.index(self.id_edit.text())] == self.password_edit.text():
-                self.open_Main_Window = Main_Window()
-                self.open_Main_Window.show()
+            if self.id_edit.text() in self.id_list and self.password_list[self.id_list.index(self.id_edit.text())] == self.password_edit.text():
                 self.close()
-            
-        
+                self.open_Main_Window = Main_Window(self.name,self.surname)
+                
+                self.open_Main_Window.show()
+                
         except ValueError:
-            if self.id_edit.text() not in id_list :
+            if self.id_edit.text() not in self.id_list :
                 self.id_edit.clear()
                 self.id_edit.setPlaceholderText("id is wrong")
-            if self.password_edit.text() not in password_list:
+            if self.password_edit.text() not in self.password_list:
                 self.password_edit.clear()
                 self.password_edit.setPlaceholderText("password is wrong")
             if self.id_edit.text() =="":
@@ -398,24 +410,69 @@ class New_Password_Window(QWidget):
             self.connect.close()
              
 class Main_Window(QMainWindow):
-    def __init__(self):
+    
+    def __init__(self,name,surname):
         super().__init__()
+        self.name = name
+        self.surname = surname
+            
+        self.menubar = self.menuBar()
+        self.menubar.setFixedHeight(50)
+        self.menubar.setStyleSheet(
+                "QMenuBar {"
+                "color:white;"
+                "background-color: #018000;"
+                "}"
+                "QMenuBar::item {"
+                "padding: 15px;"
+                "}"
+                "QMenuBar::item:selected {"
+                "background-color: #5EBF00;"
+                "}"
+            )
+
+        self.transfer_menu = self.menubar.addMenu('TRANSFER')
+        self.account_menu = self.menubar.addMenu('HESAP')
+        self.invest_menu = self.menubar.addMenu('YATIRIM')
+            
+        self.profil_label = QLabel(f"{self.name} {self.surname}")
+        self.profil_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.profil_label.setStyleSheet("QLabel { color: white; padding:15px; } QLabel::hover { background-color: #5EBF00; }")
+        self.profil_label.setFont(QFont("Tahoma",12))
         
-        self.menubar = QMenuBar(self)
-        
-        self.menubar.setFixedHeight(60)
-        
-        self.profile = self.menubar.addMenu("   Profil1   ")
-        
-        self.profile1 = self.menubar.addMenu("   Profil2   ")
-        self.profile2 = self.menubar.addMenu("   Profil3   ")
-        self.profile3 = self.menubar.addMenu("   Profil4   ")
+        self.off_button = QPushButton()
+        self.off_button.setIcon(QIcon("close.png"))
+        self.off_button.clicked.connect(self.close)
         
         
+        profil_widget = QWidget()
+        profil_layout = QHBoxLayout(profil_widget)
+        profil_layout.addWidget(self.profil_label)
+        profil_layout.addWidget(self.off_button)
+        profil_layout.setContentsMargins(0, 0, 10, 0)  
+        profil_layout.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        
+        extra_content = QWidget()
+        extra_content.setStyleSheet("background-color: yellow;")
+        extra_layout = QVBoxLayout(extra_content)
+        extra_layout.addWidget(profil_widget)
+
+        # Ana pencerenin içeriğine ekleyin
+        central_widget = QWidget(self)
+        central_layout = QVBoxLayout()
+        central_layout.addWidget(extra_content)
+        central_widget.setLayout(central_layout)
+        self.setCentralWidget(central_widget)
         
         self.setMenuBar(self.menubar)
-        self.resize(600,600)
+        self.menubar.setCornerWidget(profil_widget)  
 
+       
+        
+        
+        
+        self.resize(600, 600)
+    
 
 app = QApplication([])
 window = main()
