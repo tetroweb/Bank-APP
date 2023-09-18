@@ -445,34 +445,44 @@ class Main_Window(QMainWindow):
         self.off_button.clicked.connect(self.close)
         
         
-        profil_widget = QWidget()
-        profil_layout = QHBoxLayout(profil_widget)
-        profil_layout.addWidget(self.profil_label)
-        profil_layout.addWidget(self.off_button)
-        profil_layout.setContentsMargins(0, 0, 10, 0)  
-        profil_layout.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.profil_widget = QWidget()
+        self.profil_layout = QHBoxLayout(self.profil_widget)
+        self.profil_layout.addWidget(self.profil_label)
+        self.profil_layout.addWidget(self.off_button)
+        self.profil_layout.setContentsMargins(0, 0, 10, 0)  
+        self.profil_layout.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         
-        extra_content = QWidget()
-        extra_content.setStyleSheet("background-color: yellow;")
-        extra_layout = QVBoxLayout(extra_content)
-        extra_layout.addWidget(profil_widget)
-
-        # Ana pencerenin içeriğine ekleyin
-        central_widget = QWidget(self)
-        central_layout = QVBoxLayout()
-        central_layout.addWidget(extra_content)
-        central_widget.setLayout(central_layout)
-        self.setCentralWidget(central_widget)
+        self.extra_content = QWidget()
+        self.extra_layout = QVBoxLayout(self.extra_content)
+        self.extra_layout.addWidget(self.profil_widget)
+        
+        self.profil_label.mousePressEvent = self.profile_clicked
+        self.transfer_menu.triggered.connect(self.transfer_clicked) 
+        self.invest_menu.triggered.connect(self.invest_menu_clicked) 
+        self.account_menu.triggered.connect(self.account_clicked) 
+        
+        
+        self.central_widget = QWidget(self)
+        self.central_layout = QVBoxLayout()
+        self.central_layout.addWidget(self.extra_content)
+        self.central_widget.setLayout(self.central_layout)
+        self.setCentralWidget(self.central_widget)
         
         self.setMenuBar(self.menubar)
-        self.menubar.setCornerWidget(profil_widget)  
-
-       
-        
-        
-        
+        self.menubar.setCornerWidget(self.profil_widget)  
         self.resize(600, 600)
     
+    def profile_clicked(self,e):
+        self.extra_content.setStyleSheet("background-color: red;")
+
+    def transfer_clicked(self,e):
+        self.extra_content.setStyleSheet("background-color: green;")
+
+    def invest_menu_clicked(self,e):
+        self.extra_content.setStyleSheet("background-color: blue;")
+        
+    def account_clicked(self,e):
+        self.extra_content.setStyleSheet("background-color: yellow;")
 
 app = QApplication([])
 window = main()
